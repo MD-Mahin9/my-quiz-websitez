@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কুইজ ওয়েবসাইট</title>
+    <style>
+        body {
+            background-color: #87CEEB; /* আকাশী রঙ */
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: black; /* কালো রঙ */
+            color: white; /* সাদা টেক্সট রঙ */
+            border: none; /* বর্ডার নেই */
+            border-radius: 5px;
+        }
+
+        #quiz {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-title">কুইজ ওয়েবসাইট</h1>
+        <div id="start-page">
+            <button onclick="showQuizOptions()">প্লে কুইজ</button>
+        </div>
+
+        <div id="quiz-options" style="display:none;">
+            <h1>কুইজের বিষয় নির্বাচন করুন</h1>
+            <ul>
+                <li><button class="quiz-button" onclick="startQuiz('football')">ফুটবল</button></li>
+                <li><button class="quiz-button" onclick="startQuiz('cricket')">ক্রিকেট</button></li>
+                <li><button class="quiz-button" onclick="startQuiz('movies')">মুভি</button></li>
+                <li><button class="quiz-button" onclick="startQuiz('bhollywood')">ভলিউড</button></li>
+                <li><button class="quiz-button" onclick="startQuiz('science')">বিজ্ঞান</button></li>
+                <li><button class="quiz-button" onclick="startQuiz('history')">ইতিহাস</button></li>
+            </ul>
+        </div>
+
+        <div id="quiz" style="display:none;">
+            <h1>কুইজ শুরু করুন</h1>
+            <div id="quiz-questions"></div>
+            <button id="finish" onclick="finishQuiz()">Double your winnings</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "প্রশ্ন 1: ফুটবলে কতটি খেলোয়াড় মাঠে থাকে?", options: ["11", "10", "12"], answer: 0 },
+            { question: "প্রশ্ন 2: ক্রিকেটে কত রানের পরে ইনিংস শেষ হয়?", options: ["10", "20", "50"], answer: 2 },
+            { question: "প্রশ্ন 3: পৃথিবীর বৃহত্তম মহাসাগর কোনটি?", options: ["অ্যাটলান্টিক", "ইন্ডিয়ান", "প্যাসিফিক"], answer: 2 },
+            { question: "প্রশ্ন 4: মানুষ কতটি হাত রয়েছে?", options: ["2", "3", "4"], answer: 0 },
+            { question: "প্রশ্ন 5: কুইজের সঠিক উত্তর দেয়ার জন্য কি করতে হয়?", options: ["সঠিক উত্তর নির্বাচন", "উত্তর এড়ানো", "এখনই হার মানা"], answer: 0 },
+            { question: "প্রশ্ন 6: সূর্যের চারপাশে কতটি গ্রহ ঘোরে?", options: ["8", "9", "7"], answer: 0 },
+            { question: "প্রশ্ন 7: বাংলাদেশের রাজধানী কোথায়?", options: ["ঢাকা", "চট্টগ্রাম", "রাজশাহী"], answer: 0 },
+            { question: "প্রশ্ন 8: মঙ্গলগ্রহের রঙ কি?", options: ["সবুজ", "লাল", "নীল"], answer: 1 },
+            { question: "প্রশ্ন 9: টাইগার হল একটি কি?", options: ["জন্তু", "পাখি", "মাছ"], answer: 0 },
+            { question: "প্রশ্ন 10: মেরুপ্রান্তের শীতল স্থান কোনটি?", options: ["অ্যান্টার্কটিকা", "আর্কটিক", "উত্তর মেরু"], answer: 0 },
+            { question: "প্রশ্ন 11: পৃথিবীর অক্ষাংশ কতটি?", options: ["90", "180", "360"], answer: 1 },
+            { question: "প্রশ্ন 12: জলবায়ু পরিবর্তনের কারণ কি?", options: ["মানুষ", "প্রকৃতি", "বৃষ্টি"], answer: 0 },
+            { question: "প্রশ্ন 13: চাঁদ কিভাবে তৈরি হয়েছে?", options: ["পৃথিবীর টুকরা", "গ্রহাণু", "কৃত্রিম"], answer: 0 },
+            { question: "প্রশ্ন 14: ভূগর্ভস্থ জল কাকে বলে?", options: ["বৃষ্টির জল", "নদীর জল", "জলাধার"], answer: 2 },
+            { question: "প্রশ্ন 15: রসায়নের প্রধান উপাদান কয়টি?", options: ["3", "4", "5"], answer: 1 },
+            { question: "প্রশ্ন 16: বাংলাদেশের জাতীয় ফুল কি?", options: ["শাপলা", "পদ্ম", "গোলাপ"], answer: 0 },
+            { question: "প্রশ্ন 17: মানবদেহে কতটি হাড় থাকে?", options: ["206", "201", "200"], answer: 0 },
+            { question: "প্রশ্ন 18: মেরুপ্রান্তের অ্যান্টার্কটিকা কোন মহাসাগরে?", options: ["ভারতীয়", "অ্যাটলান্টিক", "দক্ষিণ"], answer: 2 },
+            { question: "প্রশ্ন 19: বাংলাদেশের মোট সংখ্যা কত?", options: ["১", "২", "৩"], answer: 1 },
+            { question: "প্রশ্ন 20: পৃথিবী কিভাবে ঘোরে?", options: ["সূর্যের চারপাশে", "মহাকাশে", "নিজের অক্ষে"], answer: 2 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function showQuizOptions() {
+            document.getElementById('start-page').style.display = 'none';
+            document.getElementById('quiz-options').style.display = 'block';
+        }
+
+        function startQuiz(subject) {
+            document.getElementById('quiz-options').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const quizContainer = document.getElementById('quiz-questions');
+            quizContainer.innerHTML = '';
+            const currentQuestion = questions[currentQuestionIndex];
+            const questionElement = document.createElement('div');
+            questionElement.innerHTML = `<h2>${currentQuestion.question}</h2>`;
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.onclick = () => checkAnswer(index);
+                questionElement.appendChild(button);
+            });
+            quizContainer.appendChild(questionElement);
+        }
+
+        function checkAnswer(selected) {
+            const currentQuestion = questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll('#quiz-questions button');
+            if (selected === currentQuestion.answer) {
+                buttons[selected].style.backgroundColor = 'green';
+                score++;
+            } else {
+                buttons[selected].style.backgroundColor = 'red';
+                buttons[currentQuestion.answer].style.backgroundColor = 'green';
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(loadQuestion, 1000);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            alert(`আপনার স্কোর: ${score} / ${questions.length}`);
+            location.reload(); // পেজ পুনরায় লোড হবে
+        }
+    </script>
+</body>
+</html>
